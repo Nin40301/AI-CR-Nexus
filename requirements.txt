@@ -1,0 +1,13 @@
+
+opencv-python
+numpy
+pyyaml
+ultralytics
+matplotlib # Para visualização em notebooks ou scripts de debug
+pillow # Para pytesseract
+pytesseract # Para OCR
+torch # Para DQN (certifique-se de instalar a versão correta para sua GPU/CPU)
+
+# Para o ADB, o usuário precisará instalar o ADB manualmente e adicioná-lo ao PATH.
+# Para o Tesseract OCR, o usuário precisará instalá-lo manualmente.
+

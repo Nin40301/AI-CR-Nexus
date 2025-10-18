@@ -1,0 +1,15 @@
+
+.cache/
+__pycache__/
+*.pyc
+*.log
+*.pth
+*.onnx
+*.torchscript
+debug_screenshots/
+dataset/
+
+
+
+.nvm/
+

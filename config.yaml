@@ -1,0 +1,80 @@
+
+# config.yaml
+
+# Configurações do Emulador (BlueStacks 5 via ADB)
+emulator:
+  adb_path: "adb" # Caminho para o executável ADB. Pode ser "adb" se estiver no PATH.
+  device_id: "localhost:5555" # ID do dispositivo ADB. Use `adb devices` para listar.
+  resolution_width: 1920 # Largura da resolução lógica do jogo Clash Royale. Usado para mapeamento.
+  resolution_height: 1080 # Altura da resolução lógica do jogo Clash Royale. Usado para mapeamento.
+  adb_command_timeout: 10 # Tempo limite para comandos ADB em segundos
+
+# Configurações de Visão (Object Detection)
+vision:
+  # A pipeline de detecção define a ordem e os tipos de detectores a serem usados.
+  # Cada entrada é um dicionário com 'type' (YOLOv8, OCR, TemplateMatching) e configurações específicas.
+  # 'stop_on_success': Se True, a pipeline para após o primeiro detector encontrar detecções.
+  detection_pipeline:
+    - type: "YOLOv8" # Tenta YOLOv8 primeiro
+      yolov8_model_path: "vision/yolov8n.pt" # Caminho para o modelo YOLOv8 (ex: yolov8n.pt, best.pt)
+      stop_on_success: False # Pode ser True se o YOLOv8 for muito confiável
+    - type: "OCR" # Depois OCR para elixir e outros textos
+      ocr_rois: # Regiões de Interesse para OCR no formato [x, y, w, h] da resolução lógica
+        elixir_bar: [700, 1000, 500, 80] # Exemplo de ROI para a barra de elixir
+        # Adicione outras ROIs de texto aqui, como nomes de cartas, pontuação, etc.
+      stop_on_success: False
+    - type: "TemplateMatching" # Por último Template Matching para fallback
+      templates_dir: "templates/clash_royale" # Diretório onde os templates PNG/JPG estão
+      stop_on_success: False
+
+  # Configurações gerais de detecção, aplicáveis a YOLOv8 e TemplateMatching
+  confidence_threshold: 0.5 # Limiar de confiança para detecções
+  iou_threshold: 0.7 # Limiar de IoU para Non-Maximum Suppression (apenas YOLOv8)
+  roboflow_api_key: "" # Chave da API Roboflow, se usar Roboflow (não implementado totalmente)
+  roboflow_project_id: "" # ID do projeto Roboflow
+  roboflow_model_version: "" # Versão do modelo Roboflow
+
+# Configurações do Agente de IA (Reinforcement Learning)
+ai:
+  agent_type: "RuleBased" # Ou "DQN", "PPO" (DQN implementado de forma básica)
+  model_save_path: "./ai/models/dqn_model.pth" # Caminho para salvar o modelo do agente
+  training_mode: False # True para modo de treino, False para modo de inferência
+  offline_training_data_path: "./ai/training_data" # Caminho para dados de treino offline
+  transition_log_path: "./ai/transitions.csv" # Caminho para log de transições do RL
+  batch_size: 32 # Tamanho do batch para treino do DQN
+  replay_buffer_size: 10000 # Tamanho do replay buffer para DQN
+  epsilon_start: 1.0 # Epsilon inicial para exploração DQN
+  epsilon_decay: 0.995 # Fator de decaimento do epsilon DQN
+  epsilon_min: 0.01 # Epsilon mínimo DQN
+  gamma: 0.99 # Fator de desconto DQN
+  target_update_freq: 10 # Frequência de atualização da target network DQN
+
+# Configurações do Loop Principal
+main_loop:
+  capture_delay_sec: 0.05 # Delay entre capturas (aprox. 20 FPS)
+  vision_delay_sec: 0.05 # Delay entre processamentos de visão
+  decision_delay_sec: 0.05 # Delay entre decisões
+  tap_delay_ms: 100 # Delay em milissegundos após um tap/swipe ADB
+  log_performance: True # Registrar logs de desempenho
+  log_file_path: "./logs/performance.log" # Caminho para o arquivo de log
+  save_debug_screenshots: False # Salvar screenshots de debug com bounding boxes
+  debug_screenshots_path: "./debug_screenshots" # Caminho para salvar screenshots de debug
+
+# Configurações da Interface de Usuário (Opcional)
+ui:
+  enable_fastapi_panel: False # Habilitar painel FastAPI
+  fastapi_port: 8000
+
+# Configurações para Coleta de Dataset
+dataset_collector:
+  output_directory: "./dataset/clash_royale" # Diretório onde as imagens e anotações serão salvas
+  auto_annotate: True # Se True, tentará pré-anotar as imagens com o detector atual
+  annotation_format: "yolo" # Formato das anotações (atualmente suporta 'yolo')
+  class_mapping: # Mapeamento de nomes de classes para IDs numéricos (necessário para YOLO)
+    card_knight: 0
+    card_archers: 1
+    elixir_bar: 2
+    player_king_tower: 3
+    enemy_king_tower: 4
+    # Adicione aqui todas as classes que seu modelo YOLOv8 ou Template Matching detecta
+
