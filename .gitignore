@@ -17,3 +17,7 @@ dataset/
 
 .local/share/pnpm/
 
+
+
+.browser_data_dir/
+
