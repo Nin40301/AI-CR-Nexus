@@ -13,3 +13,7 @@ dataset/
 
 .nvm/
 
+
+
+.local/share/pnpm/
+
