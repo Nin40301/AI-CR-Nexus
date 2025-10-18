@@ -271,7 +271,3 @@ Contribuições são bem-vindas! Sinta-se à vontade para fazer um fork do repos
 
 Este projeto é distribuído sob a licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
 
-## 9. Contato
-
-Para dúvidas ou sugestões, entre em contato com [Seu Nome/Email/GitHub aqui].
-
